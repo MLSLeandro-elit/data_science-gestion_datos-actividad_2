@@ -141,61 +141,48 @@ ___
 Obtener la lista de profesores que dictan cursos en dos carreras diferentes. Se deben obtener los siguientes datos: el nombre completo del profesor, el nombre del curso que dicta y el nombre de la carrera a la que pertenece el curso. Pista: averigua cómo funciona la sentencia `WITH`.
 
 ```sql
-WITH ProfesorCursos AS (
-    SELECT 
-        u.ID_USUARIO,
-        u.NOMBRE || ' ' || u.APELLIDO AS "Nombre Completo del Profesor",
-        c.NOMBRE AS "Nombre del Curso",
-        ca.NOMBRE AS "Nombre de la Carrera",
-        cc.ID_CURSO,
-        ccarr.ID_CARRERA
-    FROM 
-        USUARIOS u
-        INNER JOIN CALENDARIO_CURSOS cc ON u.ID_USUARIO = cc.ID_PROFESOR
-        INNER JOIN CURSOS c ON cc.ID_CURSO = c.ID_CURSO
-        INNER JOIN CURSOS_CARRERAS ccarr ON c.ID_CURSO = ccarr.ID_CURSO
-        INNER JOIN CARRERAS ca ON ccarr.ID_CARRERA = ca.ID_CARRERA
-)
-SELECT 
-    "Nombre Completo del Profesor",
-    "Nombre del Curso",
-    "Nombre de la Carrera"
-FROM 
-    ProfesorCursos
-WHERE 
-    ID_USUARIO IN (
-        SELECT ID_USUARIO
-        FROM ProfesorCursos
-        GROUP BY ID_USUARIO
-        HAVING COUNT(DISTINCT ID_CARRERA) > 1
-    )
-ORDER BY 
-    "Nombre Completo del Profesor", "Nombre del Curso"
-GROUP BY  "Nombre Completo del Profesor",
-    "Nombre del Curso",
-    "Nombre de la Carrera";
+WITH profe_dos_carreras as (
+    SELECT
+        cal.id_profesor 
+        from calendario_cursos cal
+        join usuarios u on cal.id_profesor = u.id_usuario and u.id_rol=2
+        join cursos cu on cu.id_curso = cal.id_curso
+        join cursos_carreras cc on cc.id_curso = cu.id_curso
+        join carreras c on c.id_carrera = cc.id_carrera
+        group by (cal.id_profesor)
+        having count (distinct c.nombre)=2
+ )   
+select distinct
+    u2.nombre || ' ' || u2.apellido as profesor, cu2.nombre as curso, c2.nombre as carrera
+    from    profe_dos_carreras pc
+    join usuarios u2 on u2.id_usuario = pc.id_profesor
+    join calendario_cursos cal2 on cal2.id_profesor = pc.id_profesor
+    join cursos cu2 on cu2.id_curso = cal2.id_curso
+    join cursos_carreras cc2 on cc2.id_curso = cu2.id_curso
+    join carreras c2 on c2.id_carrera = cc2.id_carrera
+    ORDER BY profesor ASC;
 ```
 
 ### Explicación de la Consulta
 
 1. **Common Table Expression (CTE) `WITH`**:
-   - `ProfesorCursos`: Esta CTE crea una tabla temporal que incluye información relevante sobre los profesores, los cursos que imparten y las carreras asociadas a estos cursos. La clave aquí es capturar el `ID_CURSO` y `ID_CARRERA` para cada curso que un profesor imparte.
-
+   - `profe_dos_carreras`: Esta CTE selecciona los profesores que imparten cursos en dos carreras diferentes.
+   
 2. **Selección de Columnas en la CTE**:
-   - `ID_USUARIO`: Identificador del profesor para agrupaciones futuras.
-   - `"Nombre Completo del Profesor"`: Concatenación del nombre y apellido del profesor para una visualización amigable.
-   - `"Nombre del Curso"` y `"Nombre de la Carrera"`: Nombres descriptivos del curso y la carrera asociada.
-
+   - `cal.id_profesor`: Identificador del profesor para futuras agrupaciones.
+   
 3. **Joins**:
-   - Los `JOIN` conectan las tablas `USUARIOS`, `CALENDARIO_CURSOS`, `CURSOS`, `CURSOS_CARRERAS`, y `CARRERAS` para compilar una vista completa de la información relacionada con los cursos, quienes los enseñan, y a qué carrera pertenecen.
+   - Los `JOIN` conectan las tablas `calendario_cursos`, `usuarios`, `cursos`, `cursos_carreras`, y `carreras` para obtener una vista completa de la información relacionada con los cursos que imparten los profesores y las carreras asociadas a estos cursos.
+   
+4. **Agrupación y Filtro**:
+   - La agrupación `GROUP BY (cal.id_profesor)` asegura que cada profesor aparezca solo una vez en el conjunto de resultados.
+   - El filtro `HAVING COUNT (DISTINCT c.nombre) = 2` asegura que solo se incluyan los profesores que enseñan en exactamente dos carreras diferentes.
 
-4. **Subconsulta en la Cláusula `WHERE`**:
-   - La subconsulta dentro del `WHERE` filtra `ID_USUARIO` basándose en aquellos que enseñan en más de una carrera, utilizando `COUNT(DISTINCT ID_CARRERA) > 1`. Esto asegura que solo se incluyan los profesores que dictan cursos en al menos dos carreras distintas.
-
-5. **Ordenamiento**:
-   - Los resultados se ordenan por el nombre del profesor y el nombre del curso para facilitar la legibilidad y la organización de los datos.
-  
-6. **Agrupamiento**
+5. **Selección Final**:
+   - La consulta final selecciona el nombre completo del profesor, el nombre del curso y el nombre de la carrera en la que imparte los cursos, utilizando los datos obtenidos de la CTE `profe_dos_carreras` y los joins con otras tablas.
+   
+6. **Ordenamiento**:
+   - Los resultados se ordenan por el nombre del profesor en orden ascendente para facilitar la legibilidad y la organización de los datos.
 
 ### Resultado de la consulta
 
