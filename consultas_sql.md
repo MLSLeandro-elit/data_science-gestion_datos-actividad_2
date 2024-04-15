@@ -1,5 +1,10 @@
 # Actividad 2 - Consultas
 
+Presentado por:  
+Leandro Muñoz Ossa  
+Mónica Antolínez Becerra  
+Ricardo Buitrago Umaña  
+
 El Modelo Relacional de la base de datos es el siguiente:  
 ![imgen][img_1.0]
 
@@ -21,7 +26,14 @@ FROM
     INNER JOIN SALONES s ON cc.ID_SALON = s.ID_SALON
     INNER JOIN USUARIOS u ON cc.ID_PROFESOR = u.ID_USUARIO
 WHERE 
-    ca.ID_CARRERA = 1;
+    ca.ID_CARRERA = 1
+GROUP BY 
+    c.NOMBRE, 
+    u.NOMBRE, 
+    u.APELLIDO, 
+    s.NOMBRE, 
+    cc.HORA_INICIO, 
+    cc.HORA_FIN;
 ```
 
 ### Desglose de la consulta
@@ -38,27 +50,43 @@ WHERE
 3. **Condición**:
    - Se filtra por el id de la carrera (`ca.ID_CARRERA`), para asegurarse de que sean los de la carrera de Ingeniería de Sistemas, que se identifica con el código 1.
 
+4. **Agrupar por**:  
+   - La cláusula GROUP BY en la consulta agrupa los cursos de Ingeniería de Sistemas por nombre del curso (`c.NOMBRE`), nombre del profesor (`u.NOMBRE`, `u.APELLIDO`), salón (`s.NOMBRE`) y horario (`cc.HORA_INICIO` - `cc.HORA_FIN`), asegurando que se muestren todas las combinaciones únicas de estos elementos. Esto evita duplicados en el resultado final y organiza la información para cada grupo de datos.
+     
 ### Resultado de la Consulta
 
 La consulta devuelve un conjunto de datos que muestra los cursos ofrecidos en la carrera de Ingeniería de Sistemas.
 
-- **Número de filas**: La consulta arrojó un total de **42** filas como resultado.
+- **Número de filas**: La consulta arrojó un total de **22** filas como resultado.
 - **Contenido de las filas**: Cada fila contiene el nombre del curso junto con detalles como el profesor, el salón y el horario de cada curso.
 
-A continuación se presenta una muestra de las 10 primeras filas obtenidas:
+A continuación se presenta el detalle de las 22 filas obtenidas:
 
-| Nombre del Curso                   | Nombre del Profesor | Salón | Horario          |
-|------------------------------------|---------------------|-------|------------------|
-| Introducción a la Programación     | Ben Stone           | 1.4   | 08:00 AM - 10:00 AM |
-| Introducción a la Programación     | Ben Stone           | 1.4   | 08:00 AM - 10:00 AM |
-| Desarrollo de Videouegos           | Ben Stone           | 3.2   | 02:00 PM - 05:00 PM |
-| Desarrollo de Videouegos           | Ben Stone           | 3.2   | 02:00 PM - 05:00 PM |
-| Técnicas y Prácticas de Programación | Ben Stone         | 3.4   | 04:00 PM - 06:00 PM |
-| Técnicas y Prácticas de Programación | Ben Stone         | 3.4   | 04:00 PM - 06:00 PM |
-| Estructuras de Datos               | Ben Stone           | 3.4   | 10:00 AM - 12:00 PM |
-| Estructuras de Datos               | Ben Stone           | 3.4   | 10:00 AM - 12:00 PM |
-| Lógica Digital y Lenguaje de Máquina | Grace Stone       | 1.2   | 02:00 PM - 04:00 PM |
-| Álgebra Lineal                     | Grace Stone         | 3.1   | 10:00 AM - 12:00 PM |
+| Nombre del Curso                      | Nombre del Profesor | Salón | Horario           |
+|---------------------------------------|---------------------|-------|-------------------|
+| Desarrollo de Videouegos              | Ben Stone           | 3.2   | 02:00 PM - 05:00 PM|
+| Programación Paralela                 | Ulrich Nielsen      | 3.3   | 08:00 AM - 10:00 AM|
+| Introducción a la Seguridad Informática | Robert Vance       | 3.5   | 04:00 PM - 06:00 PM|
+| Lógica Digital y Lenguaje de Máquina  | Grace Stone         | 1.2   | 02:00 PM - 04:00 PM|
+| Introducción a la Programación        | Ben Stone           | 1.4   | 08:00 AM - 10:00 AM|
+| Electricidad y Magnetismo             | Saanvi Bahl         | 1.5   | 04:00 PM - 06:00 PM|
+| Cálculo Multivariado                  | Jared Vásquez       | 2.1   | 02:00 PM - 04:00 PM|
+| Cinemática y Dinámica                 | Saanvi Bahl         | 2.2   | 02:00 PM - 04:00 PM|
+| Optimización Matemática               | Jared Vásquez       | 2.2   | 02:00 PM - 04:00 PM|
+| Cálculo Diferencial                   | Grace Stone         | 2.5   | 08:00 AM - 10:00 AM|
+| Arquitectura del Computador           | Grace Stone         | 2.6   | 04:00 PM - 06:00 PM|
+| Álgebra Lineal                        | Grace Stone         | 3.1   | 10:00 AM - 12:00 PM|
+| Cálculo Integral                      | Jared Vásquez       | 3.3   | 10:00 AM - 12:00 PM|
+| Aprendizaje Automático                | Robert Vance        | 1.1   | 04:00 PM - 06:00 PM|
+| Optimización Matemática               | Ulrich Nielsen      | 1.3   | 08:00 AM - 10:00 AM|
+| Práctica Estudiantil                  | Jared Vásquez       | 1.6   | 02:00 PM - 04:00 PM|
+| Teología                              | Zeke Landon         | 1.8   | 10:00 AM - 12:00 PM|
+| Ética                                 | Mikaela Stone       | 3.1   | 08:00 AM - 10:00 AM|
+| Estructuras de Datos                  | Ben Stone           | 3.4   | 10:00 AM - 12:00 PM|
+| Técnicas y Prácticas de Programación  | Ben Stone           | 3.4   | 04:00 PM - 06:00 PM|
+| Ética                                 | Jared Vásquez       | 3.7   | 08:00 AM - 10:00 AM|
+| Sistemas Inteligentes                 | Robert Vance        | 2.2   | 10:00 AM - 12:00 PM|
+
 
 ___
 
@@ -142,7 +170,10 @@ WHERE
         HAVING COUNT(DISTINCT ID_CARRERA) > 1
     )
 ORDER BY 
-    "Nombre Completo del Profesor", "Nombre del Curso";
+    "Nombre Completo del Profesor", "Nombre del Curso"
+GROUP BY  "Nombre Completo del Profesor",
+    "Nombre del Curso",
+    "Nombre de la Carrera";
 ```
 
 ### Explicación de la Consulta
@@ -163,28 +194,33 @@ ORDER BY
 
 5. **Ordenamiento**:
    - Los resultados se ordenan por el nombre del profesor y el nombre del curso para facilitar la legibilidad y la organización de los datos.
+  
+6. **Agrupamiento**
 
 ### Resultado de la consulta
 
 La consulta devuelve una lista de profesores que dictan cursos en dos carreras diferentes, junto con el nombre del curso y el nombre de la carrera a la que pertenece cada curso.
 
-- **Número de filas**: La consulta arrojó un total de 110 filas como resultado.
+- **Número de filas**: La consulta arrojó un total de 13 filas como resultado.
 - **Contenido de las filas**: Cada fila contiene el nombre completo del profesor, el nombre del curso que dicta y el nombre de la carrera a la que pertenece dicho curso.
 
-A continuación se presenta una muestra de las 10 primeras filas obtenidas:
+A continuación se presenta el detalle de las 13 filas obtenidas:
 
-| Nombre Completo del Profesor | Nombre del Curso          | Nombre de la Carrera   |
-|------------------------------|---------------------------|------------------------|
-| Ben Stone                    | Desarrollo de Videouegos  | Ingeniería de Sistemas |
-| Ben Stone                    | Desarrollo de Videouegos  | Ingeniería de Sistemas |
-| Ben Stone                    | Estructuras de Datos      | Ingeniería de Sistemas |
-| Ben Stone                    | Estructuras de Datos      | Ingeniería de Sistemas |
-| Ben Stone                    | Estructuras de Datos      | Matemáticas Aplicadas  |
-| Ben Stone                    | Estructuras de Datos      | Matemáticas Aplicadas  |
-| Ben Stone                    | Introducción a la Programación | Ingeniería de Sistemas |
-| Ben Stone                    | Introducción a la Programación | Ingeniería de Sistemas |
-| Ben Stone                    | Técnicas y Prácticas de Programación | Ingeniería de Sistemas |
-| Ben Stone                    | Técnicas y Prácticas de Programación | Ingeniería de Sistemas |
+| Profesor           | Curso                                 | Carrera                    |
+|--------------------|---------------------------------------|----------------------------|
+| Ben Stone          | Desarrollo de Videouegos              | Ingeniería de Sistemas     |
+| Ben Stone          | Estructuras de Datos                  | Ingeniería de Sistemas     |
+| Ben Stone          | Estructuras de Datos                  | Matemáticas Aplicadas      |
+| Ben Stone          | Introducción a la Programación        | Ingeniería de Sistemas     |
+| Ben Stone          | Técnicas y Prácticas de Programación  | Ingeniería de Sistemas     |
+| Claudia Tiedemann  | Diseño Mecánico                       | Ingeniería Mecánica        |
+| Claudia Tiedemann  | Máquinas Térmicas e Hidráulicas       | Ingeniería Mecánica        |
+| Claudia Tiedemann  | Propiedades de los Materiales         | Ingeniería Mecánica        |
+| Claudia Tiedemann  | Química y Ciencia de Materiales       | Ingeniería Mecánica        |
+| Claudia Tiedemann  | Álgebra Moderna                       | Matemáticas Aplicadas      |
+| Ulrich Nielsen     | Optimización Matemática               | Ingeniería de Sistemas     |
+| Ulrich Nielsen     | Optimización Matemática               | Matemáticas Aplicadas      |
+| Ulrich Nielsen     | Programación Paralela                 | Ingeniería de Sistemas     |
 
 ___
 
