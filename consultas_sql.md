@@ -297,7 +297,7 @@ ___
 Listar los estudiantes que se han inscrito a un curso determinado. Se deben obtener los siguientes datos: el nombre completo del estudiante y el nombre del curso.
 
 ```sql
-SELECT 
+SELECT DISTI
     u.NOMBRE || ' ' || u.APELLIDO AS "Nombre del Estudiante", 
     c.NOMBRE AS "Nombre del Curso"
 FROM 
@@ -305,6 +305,8 @@ FROM
     INNER JOIN USUARIOS u ON ce.ID_USUARIO = u.ID_USUARIO
     INNER JOIN CALENDARIO_CURSOS cc ON ce.ID_CALENDARIO = cc.ID_CALENDARIO
     INNER JOIN CURSOS c ON cc.ID_CURSO = c.ID_CURSO
+GROUP BY
+ u.NOMBRE, u.APELLIDO, c.NOMBRE
 ORDER BY
     2, 1;
 ```
@@ -320,31 +322,97 @@ ORDER BY
    - `JOIN USUARIOS u ON ce.ID_USUARIO = u.ID_USUARIO`: Se realiza un join con la tabla de usuarios para obtener los datos del estudiante. Se relaciona utilizando el ID de usuario.
    - `JOIN CALENDARIO_CURSOS cc ON ce.ID_CALENDARIO = cc.ID_CALENDARIO`: Se une con la tabla de calendario de cursos para obtener los cursos en los que están inscritos los estudiantes. Se relaciona mediante el ID del calendario de cursos.
    - `JOIN CURSOS c ON cc.ID_CURSO = c.ID_CURSO`: Se une con la tabla de cursos para obtener los nombres de los cursos. Se relaciona mediante el ID del curso.
+  
+3. **Agrupamiento**:
+    - La cláusula GROUP BY en la consulta agrupa los registros por Nombre del Estudiante (`u.NOMBRE` + `u.APELLIDO`), nombre del curso (`c.NOMBRE`), asegurando que se muestren todas las combinaciones únicas de estos elementos. Esto evita duplicados en el resultado final y organiza la información para cada grupo de datos.
 
-3. **Ordenamiento**:
+5. **Ordenamiento**:
    - `ORDER BY 2, 1`: Ordena primero por la segunda columna ("Nombre del Curso") y luego por la primera columna ("Nombre del Estudiante"). El número representa el índice de la columna en el resultado de la consulta.
 
 ### Resultado de la consulta
 
 La consulta devuelve una lista de estudiantes que se han inscrito a un curso determinado, mostrando el nombre completo del estudiante y el nombre del curso al que se han inscrito.
 
-- **Número de filas**: La consulta ha devuelto un total de 151 filas como resultado.
+- **Número de filas**: La consulta ha devuelto un total de 73 filas como resultado.
 - **Contenido de las filas**: Cada fila contiene el nombre completo del estudiante y el nombre del curso al que está inscrito.
 
-A continuación se presenta una muestra de las 10 primeras filas obtenidas:
+A continuación se presenta el detalle de las 73 filas obtenidas:
 
-| Nombre del Estudiante | Nombre del Curso            |
-|-----------------------|-----------------------------|
-| Franziska Doppler     | Arquitectura del Computador |
-| Franziska Doppler     | Arquitectura del Computador |
-| Bartosz Tiedemann     | Cinemática y Dinámica       |
-| Bartosz Tiedemann     | Cinemática y Dinámica       |
-| Bartosz Tiedemann     | Cinemática y Dinámica       |
-| Franziska Doppler     | Cinemática y Dinámica       |
-| Franziska Doppler     | Cinemática y Dinámica       |
-| Franziska Doppler     | Cinemática y Dinámica       |
-| Jonas Kahnwald        | Cinemática y Dinámica       |
-| Jonas Kahnwald        | Cinemática y Dinámica       |
+| Nombre del Estudiante | Nombre del Curso                   |
+|-----------------------|------------------------------------|
+| Bartosz Tiedemann     | Álgebra Lineal                     |
+| Franziska Doppler     | Álgebra Lineal                     |
+| Jonas Kahnwald        | Álgebra Lineal                     |
+| Magnus Nielsen        | Álgebra Lineal                     |
+| Martha Nielsen        | Álgebra Lineal                     |
+| Olive Stone           | Álgebra Lineal                     |
+| Martha Nielsen        | Álgebra Moderna                    |
+| Olive Stone           | Álgebra Moderna                    |
+| Franziska Doppler     | Arquitectura del Computador        |
+| Bartosz Tiedemann     | Cálculo Diferencial                |
+| Franziska Doppler     | Cálculo Diferencial                |
+| Jonas Kahnwald        | Cálculo Diferencial                |
+| Mads Nielsen          | Cálculo Diferencial                |
+| Magnus Nielsen        | Cálculo Diferencial                |
+| Martha Nielsen        | Cálculo Diferencial                |
+| Olive Stone           | Cálculo Diferencial                |
+| Bartosz Tiedemann     | Cálculo Integral                   |
+| Franziska Doppler     | Cálculo Integral                   |
+| Jonas Kahnwald        | Cálculo Integral                   |
+| Magnus Nielsen        | Cálculo Integral                   |
+| Martha Nielsen        | Cálculo Integral                   |
+| Olive Stone           | Cálculo Integral                   |
+| Bartosz Tiedemann     | Cálculo Multivariado               |
+| Franziska Doppler     | Cálculo Multivariado               |
+| Jonas Kahnwald        | Cálculo Multivariado               |
+| Magnus Nielsen        | Cálculo Multivariado               |
+| Martha Nielsen        | Cálculo Multivariado               |
+| Olive Stone           | Cálculo Multivariado               |
+| Bartosz Tiedemann     | Cinemática y Dinámica              |
+| Franziska Doppler     | Cinemática y Dinámica              |
+| Jonas Kahnwald        | Cinemática y Dinámica              |
+| Magnus Nielsen        | Cinemática y Dinámica              |
+| Martha Nielsen        | Cinemática y Dinámica              |
+| Olive Stone           | Cinemática y Dinámica              |
+| Bartosz Tiedemann     | Dibujo Mecánico                    |
+| Jonas Kahnwald        | Dibujo Mecánico                    |
+| Magnus Nielsen        | Dibujo Mecánico                    |
+| Bartosz Tiedemann     | Electricidad y Magnetismo          |
+| Jonas Kahnwald        | Electricidad y Magnetismo          |
+| Magnus Nielsen        | Electricidad y Magnetismo          |
+| Franziska Doppler     | Estructuras de Datos               |
+| Angelina Meyer        | Filosofía Antigua                  |
+| Bartosz Tiedemann     | Física Térmica y Ondulatoria       |
+| Jonas Kahnwald        | Física Térmica y Ondulatoria       |
+| Magnus Nielsen        | Física Térmica y Ondulatoria       |
+| Martha Nielsen        | Física Térmica y Ondulatoria       |
+| Olive Stone           | Física Térmica y Ondulatoria       |
+| Franziska Doppler     | Introducción a la Programación     |
+| Mads Nielsen          | Introducción a la Programación     |
+| Franziska Doppler     | Lógica Digital y Lenguaje de Máquina|
+| Magnus Nielsen        | Mecánica de Fluidos                |
+| Bartosz Tiedemann     | Mecánica de Sólidos                |
+| Jonas Kahnwald        | Mecánica de Sólidos                |
+| Magnus Nielsen        | Mecánica de Sólidos                |
+| Mads Nielsen          | Optimización Matemática            |
+| Bartosz Tiedemann     | Propiedades de los Materiales      |
+| Jonas Kahnwald        | Propiedades de los Materiales      |
+| Magnus Nielsen        | Propiedades de los Materiales      |
+| Bartosz Tiedemann     | Química y Ciencia de Materiales    |
+| Jonas Kahnwald        | Química y Ciencia de Materiales    |
+| Magnus Nielsen        | Química y Ciencia de Materiales    |
+| Franziska Doppler     | Técnicas y Prácticas de Programación|
+| Angelina Meyer        | Teología                           |
+| Bartosz Tiedemann     | Teología                           |
+| Jonas Kahnwald        | Teología                           |
+| Magnus Nielsen        | Teología                           |
+| Martha Nielsen        | Teología                           |
+| Olive Stone           | Teología                           |
+| Martha Nielsen        | Teoría de Probabilidades           |
+| Olive Stone           | Teoría de Probabilidades           |
+| Bartosz Tiedemann     | Termodinámica                      |
+| Jonas Kahnwald        | Termodinámica                      |
+| Magnus Nielsen        | Termodinámica                      |
 
 <!-- Images  -->
 
